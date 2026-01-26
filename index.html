@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -65,12 +66,15 @@
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
             }
+
             10% {
                 opacity: 0.3;
             }
+
             90% {
                 opacity: 0.3;
             }
+
             100% {
                 transform: translateY(-100px) rotate(360deg);
                 opacity: 0;
@@ -101,6 +105,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -119,9 +124,12 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
@@ -170,7 +178,8 @@
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            min-height: 120px;
+            min-height: 150px;
+            padding: 20px;
         }
 
         .btn {
@@ -209,7 +218,7 @@
             background: var(--success-gradient);
             color: white;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
         .btn-yes:hover {
@@ -224,9 +233,13 @@
         .btn-no {
             background: var(--secondary-gradient);
             color: white;
-            position: absolute;
+            position: relative;
             transition: all 0.2s ease;
             z-index: 1;
+        }
+
+        .btn-no.moving {
+            position: absolute;
         }
 
         .btn-no:hover {
@@ -244,12 +257,15 @@
                 opacity: 0;
                 transform: scale(0.3);
             }
+
             50% {
                 transform: scale(1.05);
             }
+
             70% {
                 transform: scale(0.9);
             }
+
             100% {
                 opacity: 1;
                 transform: scale(1);
@@ -278,12 +294,16 @@
         }
 
         @keyframes rotate {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: rotate(0deg);
             }
+
             25% {
                 transform: rotate(-10deg);
             }
+
             75% {
                 transform: rotate(10deg);
             }
@@ -314,6 +334,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Animated hearts background -->
     <div class="hearts-bg" id="heartsContainer"></div>
@@ -322,14 +343,14 @@
         <div class="card">
             <h1>Hey Nicky! <span class="emoji">💝</span></h1>
             <p class="subtitle">I have something special to ask you...</p>
-            
+
             <div class="image-container">
                 <img id="mainImage" src="nnns_looking_away.jpg" alt="Us together">
             </div>
 
             <div id="questionSection">
                 <p class="question">Will you be my Valentine? <span class="emoji">🌹</span></p>
-                
+
                 <div class="buttons-container" id="buttonsContainer">
                     <button class="btn btn-yes" id="yesBtn">Yes! 💕</button>
                     <button class="btn btn-no" id="noBtn">No</button>
@@ -349,7 +370,7 @@
         function createHearts() {
             const heartsContainer = document.getElementById('heartsContainer');
             const heartSymbols = ['💕', '💖', '💗', '💝', '💘', '❤️', '🌹'];
-            
+
             for (let i = 0; i < 15; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
@@ -372,7 +393,7 @@
         const buttonsContainer = document.getElementById('buttonsContainer');
 
         // Yes button click handler
-        yesBtn.addEventListener('click', function() {
+        yesBtn.addEventListener('click', function () {
             // Change image
             mainImage.style.opacity = '0';
             setTimeout(() => {
@@ -385,42 +406,96 @@
             successMessage.style.display = 'block';
         });
 
+        // Track current position index
+        let currentPositionIndex = 0;
+
         // No button hover and click handler - makes it run away
         function moveNoButton() {
             const container = buttonsContainer.getBoundingClientRect();
-            const button = noBtn.getBoundingClientRect();
-            
-            // Calculate available space
-            const maxX = container.width - button.width - 40; // 40px padding
-            const maxY = container.height - button.height - 20; // 20px padding
-            
-            // Generate random position
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
-            
+            const yesButton = yesBtn.getBoundingClientRect();
+            const noButton = noBtn.getBoundingClientRect();
+
+            // Define predefined safe positions (relative to container)
+            // These positions are carefully chosen to avoid the "Yes" button area
+            const safePositions = [
+                { left: '10px', top: '10px' },           // Top left
+                { left: '10px', top: '80px' },           // Bottom left
+                { right: '10px', top: '10px' },          // Top right
+                { right: '10px', top: '80px' },          // Bottom right
+                { left: '50%', top: '10px', transform: 'translateX(-50%)' },  // Top center
+                { left: '50%', top: '80px', transform: 'translateX(-50%)' }   // Bottom center
+            ];
+
+            // Get the center position of the Yes button relative to container
+            const yesBtnCenterX = yesButton.left - container.left + yesButton.width / 2;
+            const yesBtnCenterY = yesButton.top - container.top + yesButton.height / 2;
+
+            // Filter out positions that would overlap with Yes button
+            const validPositions = safePositions.filter(pos => {
+                // Calculate the position of No button if placed at this safe position
+                let testX, testY;
+
+                if (pos.left) {
+                    testX = parseInt(pos.left);
+                } else if (pos.right) {
+                    testX = container.width - parseInt(pos.right) - noButton.width;
+                } else if (pos.left === '50%') {
+                    testX = (container.width - noButton.width) / 2;
+                }
+
+                testY = parseInt(pos.top);
+
+                // Calculate center of No button at test position
+                const testCenterX = testX + noButton.width / 2;
+                const testCenterY = testY + noButton.height / 2;
+
+                // Calculate distance between centers
+                const distance = Math.sqrt(
+                    Math.pow(testCenterX - yesBtnCenterX, 2) +
+                    Math.pow(testCenterY - yesBtnCenterY, 2)
+                );
+
+                // Minimum safe distance (sum of button widths to ensure no overlap)
+                const minDistance = (yesButton.width + noButton.width) / 2 + 20; // 20px extra padding
+
+                return distance >= minDistance;
+            });
+
+            // If we have valid positions, use them; otherwise use all positions
+            const positions = validPositions.length > 0 ? validPositions : safePositions;
+
+            // Move to next position in sequence
+            currentPositionIndex = (currentPositionIndex + 1) % positions.length;
+            const newPosition = positions[currentPositionIndex];
+
+            // Add 'moving' class to change position to absolute
+            noBtn.classList.add('moving');
+
             // Apply new position
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
+            noBtn.style.left = newPosition.left || 'auto';
+            noBtn.style.right = newPosition.right || 'auto';
+            noBtn.style.top = newPosition.top;
+            noBtn.style.transform = newPosition.transform || 'none';
         }
 
         // Handle both hover (desktop) and touch start (mobile)
         noBtn.addEventListener('mouseenter', moveNoButton);
-        noBtn.addEventListener('touchstart', function(e) {
+        noBtn.addEventListener('touchstart', function (e) {
             e.preventDefault();
             moveNoButton();
         });
 
         // Also move on click attempt
-        noBtn.addEventListener('click', function(e) {
+        noBtn.addEventListener('click', function (e) {
             e.preventDefault();
             moveNoButton();
         });
 
         // Prevent default touch behavior to avoid scrolling issues
-        noBtn.addEventListener('touchmove', function(e) {
+        noBtn.addEventListener('touchmove', function (e) {
             e.preventDefault();
         });
     </script>
 </body>
+
 </html>
