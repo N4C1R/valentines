@@ -291,6 +291,11 @@
         .emoji {
             display: inline-block;
             animation: rotate 2s ease-in-out infinite;
+            /* Reset gradient text properties to make emojis visible */
+            -webkit-text-fill-color: initial;
+            -webkit-background-clip: initial;
+            background-clip: initial;
+            background: none;
         }
 
         @keyframes rotate {
@@ -384,6 +389,13 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             flex-shrink: 0;
+            color: white;
+        }
+
+        /* Improve icon visibility with text shadow */
+        .music-toggle .play-icon,
+        .music-toggle .pause-icon {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         .music-toggle:hover {
