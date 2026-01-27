@@ -332,12 +332,216 @@
                 font-size: 1.2rem;
             }
         }
+
+        /* Music Controls */
+        .music-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .music-controls:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+        }
+
+        .music-toggle {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            flex-shrink: 0;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .music-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .music-toggle.playing {
+            background: var(--secondary-gradient);
+            animation: pulse-music 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-music {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 4px 25px rgba(245, 87, 108, 0.6);
+            }
+        }
+
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 200px;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .progress-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-slider:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Webkit browsers (Chrome, Safari) */
+        .progress-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .progress-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 3px 12px rgba(245, 87, 108, 0.6);
+        }
+
+        /* Firefox */
+        .progress-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(245, 87, 108, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .progress-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 3px 12px rgba(245, 87, 108, 0.6);
+        }
+
+        /* Progress fill effect */
+        .progress-slider::-webkit-slider-runnable-track {
+            background: linear-gradient(to right,
+                    rgba(240, 147, 251, 0.6) 0%,
+                    rgba(245, 87, 108, 0.6) var(--progress, 0%),
+                    rgba(255, 255, 255, 0.2) var(--progress, 0%));
+            border-radius: 3px;
+        }
+
+        .progress-slider::-moz-range-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .progress-slider::-moz-range-progress {
+            background: linear-gradient(to right, rgba(240, 147, 251, 0.6), rgba(245, 87, 108, 0.6));
+            border-radius: 3px;
+        }
+
+        /* Mobile optimizations for music controls */
+        @media (max-width: 768px) {
+            .music-controls {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                padding: 12px 15px;
+            }
+
+            .progress-container {
+                min-width: 0;
+                flex: 1;
+            }
+
+            .music-toggle {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .music-controls {
+                bottom: 15px;
+                right: 15px;
+                left: 15px;
+                padding: 10px 12px;
+            }
+
+            .time-display {
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 
 <body>
     <!-- Animated hearts background -->
     <div class="hearts-bg" id="heartsContainer"></div>
+
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop muted>
+        <source src="taylor_swift_timeless.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <div class="container">
         <div class="card">
@@ -362,6 +566,23 @@
                 <p>It's gonna be a wonderful day!</p>
                 <p style="margin-top: 15px; font-size: 2rem;">💖✨🌹</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Music Control Panel -->
+    <div class="music-controls" id="musicControls">
+        <button class="music-toggle" id="musicToggle" aria-label="Play/Pause Music">
+            <span class="play-icon">🎵</span>
+            <span class="pause-icon" style="display: none;">⏸️</span>
+        </button>
+        <div class="progress-container">
+            <div class="time-display">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+            </div>
+            <input type="range" class="progress-slider" id="progressSlider" min="0" max="100" value="0"
+                aria-label="Song Progress">
+            <div class="progress-fill" id="progressFill"></div>
         </div>
     </div>
 
@@ -494,6 +715,118 @@
         // Prevent default touch behavior to avoid scrolling issues
         noBtn.addEventListener('touchmove', function (e) {
             e.preventDefault();
+        });
+
+        // ========== MUSIC CONTROLS ==========
+        const audio = document.getElementById('backgroundMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const playIcon = musicToggle.querySelector('.play-icon');
+        const pauseIcon = musicToggle.querySelector('.pause-icon');
+        const progressSlider = document.getElementById('progressSlider');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const durationDisplay = document.getElementById('duration');
+
+        let isPlaying = false;
+        let hasInteracted = false;
+
+        // Format time in MM:SS
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Update progress slider and time display
+        function updateProgress() {
+            if (audio.duration) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressSlider.value = progress;
+                progressSlider.style.setProperty('--progress', `${progress}%`);
+                currentTimeDisplay.textContent = formatTime(audio.currentTime);
+            }
+        }
+
+        // Update duration display when metadata is loaded
+        audio.addEventListener('loadedmetadata', function () {
+            durationDisplay.textContent = formatTime(audio.duration);
+            progressSlider.max = 100;
+        });
+
+        // Update progress as audio plays
+        audio.addEventListener('timeupdate', updateProgress);
+
+        // Handle progress slider change (seeking)
+        progressSlider.addEventListener('input', function () {
+            const seekTime = (this.value / 100) * audio.duration;
+            audio.currentTime = seekTime;
+            updateProgress();
+        });
+
+        // Toggle play/pause
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                playIcon.style.display = 'inline';
+                pauseIcon.style.display = 'none';
+                musicToggle.classList.remove('playing');
+            } else {
+                // Unmute on first interaction
+                if (!hasInteracted) {
+                    audio.muted = false;
+                    hasInteracted = true;
+                }
+
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'inline';
+                    musicToggle.classList.add('playing');
+                }).catch(error => {
+                    console.log('Autoplay prevented:', error);
+                });
+            }
+        }
+
+        // Play/pause button click handler
+        musicToggle.addEventListener('click', toggleMusic);
+
+        // Auto-start music on first user interaction (click anywhere)
+        function autoStartMusic() {
+            if (!hasInteracted) {
+                hasInteracted = true;
+                audio.muted = false;
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'inline';
+                    musicToggle.classList.add('playing');
+                }).catch(error => {
+                    console.log('Autoplay prevented:', error);
+                });
+
+                // Remove the event listener after first interaction
+                document.removeEventListener('click', autoStartMusic);
+                document.removeEventListener('touchstart', autoStartMusic);
+            }
+        }
+
+        // Try to auto-start on first click/touch anywhere on the page
+        document.addEventListener('click', autoStartMusic, { once: true });
+        document.addEventListener('touchstart', autoStartMusic, { once: true });
+
+        // Attempt to play immediately (will work if browser allows)
+        audio.play().then(() => {
+            audio.muted = false;
+            hasInteracted = true;
+            isPlaying = true;
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'inline';
+            musicToggle.classList.add('playing');
+        }).catch(() => {
+            // Autoplay blocked, will wait for user interaction
+            console.log('Autoplay blocked - waiting for user interaction');
         });
     </script>
 </body>
