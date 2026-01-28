@@ -574,7 +574,7 @@
                 <p class="question">Will you be my Valentine? <span class="emoji">🌹</span></p>
 
                 <div class="buttons-container" id="buttonsContainer">
-                    <button class="btn btn-yes" id="yesBtn">Yes! 💕</button>
+                    <button class="btn btn-yes" id="yesBtn" onclick="trackButtonClick('yes')">Yes! 💕</button>
                     <button class="btn btn-no" id="noBtn">No</button>
                 </div>
             </div>
@@ -846,6 +846,29 @@
             // Autoplay blocked, will wait for user interaction
             console.log('Autoplay blocked - waiting for user interaction');
         });
+
+        // Track Interaction Example
+        async function trackButtonClick(buttonName) {
+            try {
+                await fetch('https://naromailing.pythonanywhere.com/api/track/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        event_type: 'button_click',
+                        event_name: buttonName,
+                        custom_data: {
+                            page: window.location.pathname,
+                            timestamp: new Date().toISOString()
+                        }
+                    })
+                });
+            } catch (error) {
+                console.error('Tracking error:', error);
+            }
+        }
+
     </script>
 </body>
 
